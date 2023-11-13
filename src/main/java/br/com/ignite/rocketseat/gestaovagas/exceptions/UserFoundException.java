@@ -1,7 +1,7 @@
 package br.com.ignite.rocketseat.gestaovagas.exceptions;
 
-public class CandidateFoundException extends RuntimeException {
-    public CandidateFoundException() {
+public class UserFoundException extends RuntimeException {
+    public UserFoundException() {
         super("Usuário já existe");
     }
 }

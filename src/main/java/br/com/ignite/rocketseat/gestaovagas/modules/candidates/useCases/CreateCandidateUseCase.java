@@ -1,6 +1,6 @@
 package br.com.ignite.rocketseat.gestaovagas.modules.candidates.useCases;
 
-import br.com.ignite.rocketseat.gestaovagas.exceptions.CandidateFoundException;
+import br.com.ignite.rocketseat.gestaovagas.exceptions.UserFoundException;
 import br.com.ignite.rocketseat.gestaovagas.modules.candidates.CandidateEntity;
 import br.com.ignite.rocketseat.gestaovagas.modules.candidates.CandidateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class CreateCandidateUseCase {
                 candidateEntity.getUsername(),
                 candidateEntity.getEmail()
         ).ifPresent((user) -> {
-            throw new CandidateFoundException();
+            throw new UserFoundException();
         });
 
         return this.candidateRepository.save(candidateEntity);
