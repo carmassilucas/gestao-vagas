@@ -1,6 +1,6 @@
 package br.com.ignite.rocketseat.gestaovagas.security;
 
-import br.com.ignite.rocketseat.gestaovagas.providers.JwtProvider;
+import br.com.ignite.rocketseat.gestaovagas.providers.JwtCandidateProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,13 +13,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
 
 @Component
-public class SecurityFilter extends OncePerRequestFilter {
-
+public class SecurityCandidateFilter extends OncePerRequestFilter {
     @Autowired
-    private JwtProvider jwtProvider;
+    private JwtCandidateProvider jwtCandidateProvider;
 
     @Override
     protected void doFilterInternal(
@@ -29,15 +27,16 @@ public class SecurityFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String header = request.getHeader("Authorization");
 
-        if (request.getRequestURI().startsWith("/company")) {
+        if (request.getRequestURI().startsWith("/candidate")) {
             if (header != null) {
-                var token = this.jwtProvider.validateToken(header);
+                var token = this.jwtCandidateProvider.validateToken(header);
 
                 if (token == null) {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                     return;
                 }
 
+                request.setAttribute("candidate_id", token.getSubject());
                 var roles = token.getClaim("roles").asList(Object.class);
 
                 var grants = roles.stream()
@@ -45,7 +44,6 @@ public class SecurityFilter extends OncePerRequestFilter {
                                 "ROLE_" + role.toString().toUpperCase())
                         ).toList();
 
-                request.setAttribute("company_id", token.getSubject());
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                         token.getSubject(),
                         null,
@@ -57,5 +55,4 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-
 }
