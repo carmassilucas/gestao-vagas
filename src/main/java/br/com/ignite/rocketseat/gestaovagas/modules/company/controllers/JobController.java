@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/job")
-public class JonController {
+public class JobController {
 
     @Autowired
     private CreateJobUseCase createJobUseCase;
