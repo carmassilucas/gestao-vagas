@@ -1,8 +1,6 @@
 package br.com.ignite.rocketseat.gestaovagas.modules.candidate.controllers;
 
-import br.com.ignite.rocketseat.gestaovagas.exceptions.UserFoundException;
 import br.com.ignite.rocketseat.gestaovagas.modules.candidate.CandidateEntity;
-import br.com.ignite.rocketseat.gestaovagas.modules.candidate.CandidateRepository;
 import br.com.ignite.rocketseat.gestaovagas.modules.candidate.useCases.CreateCandidateUseCase;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
