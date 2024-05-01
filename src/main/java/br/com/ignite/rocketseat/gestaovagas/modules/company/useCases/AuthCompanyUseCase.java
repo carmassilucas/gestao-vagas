@@ -1,6 +1,7 @@
 package br.com.ignite.rocketseat.gestaovagas.modules.company.useCases;
 
 import br.com.ignite.rocketseat.gestaovagas.modules.company.dtos.AuthCompanyDto;
+import br.com.ignite.rocketseat.gestaovagas.modules.company.dtos.AuthCompanyResponseDto;
 import br.com.ignite.rocketseat.gestaovagas.modules.company.repositories.CompanyRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.naming.AuthenticationException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 
 @Service
 public class AuthCompanyUseCase {
@@ -25,7 +27,7 @@ public class AuthCompanyUseCase {
     @Value("security.token.secret")
     private String secretKey;
 
-    public String execute(AuthCompanyDto authCompanyDto) throws AuthenticationException {
+    public AuthCompanyResponseDto execute(AuthCompanyDto authCompanyDto) throws AuthenticationException {
         var company = this.companyRepository.findByUsername(authCompanyDto.getUsername())
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário ou senha incorreto"));
 
@@ -36,9 +38,17 @@ public class AuthCompanyUseCase {
 
         Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
-        return JWT.create().withIssuer("Ignite - Rocketseat")
+        var expiresIn = Instant.now().plus(Duration.ofHours(2));
+
+        var token =  JWT.create().withIssuer("Ignite - Rocketseat")
                 .withSubject(company.getId().toString())
-                .withExpiresAt(Instant.now().plus(Duration.ofHours(2)))
+                .withClaim("roles", List.of("COMPANY"))
+                .withExpiresAt(expiresIn)
                 .sign(algorithm);
+
+        return AuthCompanyResponseDto.builder()
+                .access_token(token)
+                .expires_in(expiresIn.toEpochMilli())
+                .build();
     }
 }

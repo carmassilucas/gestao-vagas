@@ -1,6 +1,6 @@
 package br.com.ignite.rocketseat.gestaovagas.security;
 
-import br.com.ignite.rocketseat.gestaovagas.providers.JWTProvider;
+import br.com.ignite.rocketseat.gestaovagas.providers.JWTCandidateProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,16 +15,16 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-public class SecurityFilter extends OncePerRequestFilter {
+public class SecurityCandidateFilter extends OncePerRequestFilter {
     @Autowired
-    private JWTProvider jwtProvider;
+    private JWTCandidateProvider jwtProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String header = request.getHeader("Authorization");
 
-        if (request.getRequestURI().startsWith("/company")) {
+        if (request.getRequestURI().startsWith("/candidate")) {
             if (header != null) {
                 var token = this.jwtProvider.validateToken(header);
 
@@ -33,12 +33,12 @@ public class SecurityFilter extends OncePerRequestFilter {
                     return;
                 }
 
-                request.setAttribute("company_id", token.getSubject());
+                request.setAttribute("candidate_id", token.getSubject());
 
-                var roles = token.getClaim("roles").asList(Object.class).stream();
+                var roles = token.getClaim("roles").asList(Object.class);
 
-                var grants = roles.map(
-                    role -> new SimpleGrantedAuthority("ROLE_" + role.toString().toUpperCase())
+                var grants = roles.stream().map(
+                        role -> new SimpleGrantedAuthority("ROLE_" + role.toString().toUpperCase())
                 ).toList();
 
                 SecurityContextHolder.getContext().setAuthentication(
