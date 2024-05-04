@@ -1,9 +1,9 @@
 package br.com.ignite.rocketseat.gestaovagas.modules.candidate.useCases;
 
+import br.com.ignite.rocketseat.gestaovagas.exceptions.UserNotFoundException;
 import br.com.ignite.rocketseat.gestaovagas.modules.candidate.CandidateRepository;
 import br.com.ignite.rocketseat.gestaovagas.modules.candidate.dtos.ProfileCandidateResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
@@ -15,7 +15,7 @@ public class ProfileCandidateUseCase {
 
     public ProfileCandidateResponseDto execute(UUID idCandidate) {
         var candidate = this.candidateRepository.findById(idCandidate)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
+                .orElseThrow(UserNotFoundException::new);
 
         return ProfileCandidateResponseDto.builder()
                 .id(candidate.getId())
