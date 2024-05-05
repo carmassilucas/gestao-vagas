@@ -14,7 +14,7 @@
 	<name>Gestao de Vagas</name>
 	<description>Gerenciamento de vagas de emprego, projeto desenvolvido para estudo do ecossistema Spring com Java</description>
 	<properties>
-		<java.version>22</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
